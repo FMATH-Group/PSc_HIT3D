@@ -127,3 +127,17 @@ alpha2 = 0.0
 k2_mask = np.where(K2 <= kf**2, 1, 0)
 
 # %%##########################################################################
+
+mu2 = np.zeros(3)
+mu3 = np.zeros(3)
+mu4 = np.zeros(3)
+
+if solver_type == 'Scalar':
+    Phi_mean = 0.0
+    Phi_mean_p = 0.0
+    ScalarFlux = np.zeros(3)
+    mu2_dphi = np.zeros(3)
+    mu3_dphi = np.zeros(3)
+    mu4_dphi = np.zeros(3)
+
+# %%##########################################################################
