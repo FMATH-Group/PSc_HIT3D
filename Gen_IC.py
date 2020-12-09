@@ -88,3 +88,74 @@ def ifftn_mpi(fu, u):
     return u
 
 #%%###########################################################################
+
+def gen_IC(res,Kf):
+    
+    PI=np.pi
+
+    u_w=np.zeros((res**3,3),dtype=complex)
+    
+    wave_n=np.array([0.0,0.0,0.0])
+    max_wave=int(res/2)
+    ndx=0
+    
+    for k in range(0,res):
+        for j in range(0,res):
+            for i in range(0,res):
+                
+                wave_n[0]=i
+                if i > max_wave:
+                    wave_n[0]=i-res
+                wave_n[1]=j
+                if j > max_wave:
+                    wave_n[1]=j-res
+                wave_n[2]=k
+                if k > max_wave:
+                    wave_n[2]=k-res
+            
+                k_tmp=LA.norm(wave_n, ord=2)
+                Esp=k_tmp
+                
+                theta=np.random.uniform(0.0,2*PI,2)
+                psi=np.random.uniform(0.0,2*PI)
+                
+                phs1=np.exp(1j*theta[0])
+                phs2=np.exp(1j*theta[1])
+                Amp=1.0/(4.0*PI)
+                
+                if Esp <= Kf:
+                    A1=np.sqrt(Amp/Kf**3)
+                    alpha=A1*np.cos(psi)*phs1
+                    beta=A1*np.sin(psi)*phs2
+                else:
+                    A1=np.sqrt(Amp*(Kf**2/Esp**11)**(1.0/3.0))
+                    alpha=A1*np.cos(psi)*phs1
+                    beta=A1*np.sin(psi)*phs2
+                
+                den12=Esp*np.sqrt(wave_n[0]**2+wave_n[1]**2)
+                den3=Esp
+                
+                if den3 == 0.0:
+                    den3 = 1.0
+                    
+                if den12 == 0.0:
+                    den12 = 1.0
+                    
+                u_w[ndx,0]=(alpha*Esp*wave_n[1]+alpha*wave_n[0]*wave_n[2])/den12
+                u_w[ndx,1]=(beta*wave_n[1]*wave_n[2]-alpha*Esp*wave_n[0])/den12
+                u_w[ndx,2]=beta*np.sqrt(wave_n[0]**2+wave_n[1]**2)/den3
+                
+                ndx +=1
+        
+    u1_w=u_w[:,0].reshape(res,res,res)
+    u2_w=u_w[:,1].reshape(res,res,res)
+    u3_w=u_w[:,2].reshape(res,res,res)
+    
+    
+    u=np.real(np.fft.ifftn(u1_w,axes=(0,1,2)))
+    v=np.real(np.fft.ifftn(u2_w,axes=(0,1,2)))
+    w=np.real(np.fft.ifftn(u3_w,axes=(0,1,2)))
+    
+    return u,v,w
+
+# %%##########################################################################
