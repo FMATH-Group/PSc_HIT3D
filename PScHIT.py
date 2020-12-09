@@ -91,3 +91,14 @@ Uc_hatT = np.empty((Np, N, N2), dtype=complex)
 P = np.empty((Np, N, N))
 P_hat = np.empty((N, Np, N2), dtype=complex)
 curl = np.empty((3, Np, N, N))
+
+if solver_type == 'Scalar':
+
+    Phi = np.empty((Np, N, N))
+    Phi_old = np.empty((Np, N, N))
+    dPhidX = np.empty((3, Np, N, N))
+    Phi_hat = np.zeros((N, Np, N2), dtype=complex)
+    dPhi = np.empty((N, Np, N2), dtype=complex)
+    dPhi0 = np.empty((3, N, Np, N2), dtype=complex)
+    
+# %%##########################################################################
