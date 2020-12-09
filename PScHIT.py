@@ -626,3 +626,13 @@ while t < end_time-1e-8:
 
             # Computing Skweness and Flatness of VGT
             comp_VGT_HO_Stat(mu2, mu3, mu4)
+
+            if solver_type == 'Scalar':
+
+                # Computing balance of scalar variance
+                comp_ScalarVar_Budget(VarPhi, VarPhi_old, Forcing_Flux,
+                                      epsilon_phi)
+
+                # Skweness and Flatness of scalar fluctuations and gradients
+                comp_Scalar_Stats(VarPhi, mu3_phi, mu4_phi, mu2_dphi, mu3_dphi,
+                                  mu4_dphi, ScalarFlux)
