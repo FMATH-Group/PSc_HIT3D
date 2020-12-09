@@ -407,5 +407,31 @@ if nout == 0:
 
         t = 0.0
         tstep = 0
+        
+    # Start from fully-developed velocity field
+    # w/ zero-initialized passive scalar
+    if solver_type == 'Scalar':
+        if rank == 0:
+            os.mkdir(dirname)
+            target_energy = float(np.genfromtxt(
+                'IC'+IC_in+'/Target-'+IC_in+'-'+sim_in+'.txt'))
+
+            if forcing_type == 'stochastic':
+                stc = io.loadmat('IC'+IC_in+'/OU_process.mat')
+                xp = stc['OU'].reshape((-1,1))
+
+        # Read velocity field
+        uu = io.loadmat('IC'+IC_in+'/Vel'+str(N)+'-p_'+str(rank)+'.mat')
+
+        for i in range(3):
+            U[i]=np.reshape(uu['u'+str(i+1)][0,:].T,(Np,N,N))
+            U_hat[i] = fftn_mpi(U[i], U_hat[i])
+            U[i] = ifftn_mpi(U_hat[i], U[i])
+
+
+        temp = np.loadtxt('IC'+IC_in+'/time.txt')
+        t = float(temp[0])
+        tstep = int(temp[1])
+        nout = int(temp[2])
 
 #%%###########################################################################
