@@ -41,3 +41,29 @@ rst = os.path.join(dirpath,'Out_'+nout_in)
 
 
 # %%##########################################################################
+
+comm = MPI.COMM_WORLD
+nproc = comm.Get_size()
+rank = comm.Get_rank()
+
+Np = N//nproc
+N2 = N//2+1
+NN = Np*N**2
+
+U = np.empty((3, Np, N, N))
+dUdX = np.empty((9, Np, N, N))
+H_ij = np.empty((6, Np, N, N))
+U_hat = np.empty((3, N, Np, N2), dtype=complex)
+dU = np.empty((3, N, Np, N2), dtype=complex)
+Uc_hat = np.empty((N, Np, N2), dtype=complex)
+Uc_hatT = np.empty((Np, N, N2), dtype=complex)
+P = np.empty((Np, N, N))
+P_hat = np.empty((N, Np, N2), dtype=complex)
+Omega = np.empty((3, Np, N, N))
+
+if solver_type == 'Scalar':
+    Phi = np.empty((Np, N, N))
+    dPhidX = np.empty((3, Np, N, N))
+    Phi_hat = np.zeros((N, Np, N2), dtype=complex)
+    
+# %%##########################################################################
