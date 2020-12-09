@@ -101,3 +101,23 @@ def ifftn_mpi(fu, u):
     return u
 
 #%%###########################################################################
+
+def Read_field():
+
+    # Read the velocity field
+    uu = io.loadmat('Vel'+str(N)+'-p_'+str(rank)+'.mat')
+
+    for i in range(3):
+        U[i] = np.reshape(uu['u'+str(i+1)][0,:].T,(Np,N,N))
+        U_hat[i] = fftn_mpi(U[i], U_hat[i])
+
+    # Read the passive scalar field
+    if solver_type == 'Scalar':
+        pp = io.loadmat('Phi'+str(N)+'-p_'+str(rank)+'.mat')
+
+        Phi = np.reshape(pp['phi'][0,:].T,(Np,N,N))
+        Phi_hat[:] = fftn_mpi(Phi, Phi_hat)
+
+    return
+
+# %%##########################################################################
