@@ -206,5 +206,19 @@ def comp_VGT(a, c):
     c[8] = ifftn_mpi(1j*K[2]*a[2],c[8])
     return c
 
+def comp_VGT_moments(a, m2, m3, m4):
+
+    m2[0] = comm.reduce(np.mean(a[0]**2)/nproc)
+    m2[1] = comm.reduce(np.mean(a[4]**2)/nproc)
+    m2[2] = comm.reduce(np.mean(a[8]**2)/nproc)
+
+    m3[0] = comm.reduce(np.mean(a[0]**3)/nproc)
+    m3[1] = comm.reduce(np.mean(a[4]**3)/nproc)
+    m3[2] = comm.reduce(np.mean(a[8]**3)/nproc)
+
+    m4[0] = comm.reduce(np.mean(a[0]**4)/nproc)
+    m4[1] = comm.reduce(np.mean(a[4]**4)/nproc)
+    m4[2] = comm.reduce(np.mean(a[8]**4)/nproc)
+    return m2, m3, m4
 
 # %%##########################################################################
