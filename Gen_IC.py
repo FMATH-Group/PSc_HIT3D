@@ -22,3 +22,19 @@ try:
 
 except ImportError:
     pass
+
+# %%##########################################################################
+
+sim_in = sys.argv[1] 
+N_in = sys.argv[2]
+N = int(N_in)
+Kf_in = sys.argv[3]
+kf = float(Kf_in)
+nproc_in = sys.argv[4]
+nproc = int(nproc_in)
+
+dirpath = os.path.join(os.getcwd(),'N_'+N_in+'-Kf_'+Kf_in+'-num_'+sim_in)
+os.mkdir(dirpath)
+os.chdir(dirpath)
+
+# %%##########################################################################
