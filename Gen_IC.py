@@ -193,3 +193,15 @@ dUdX[5] = ifftn_mpi(1j*K[2]*U_hat[1],dUdX[5])
 dUdX[6] = ifftn_mpi(1j*K[0]*U_hat[2],dUdX[6])
 dUdX[7] = ifftn_mpi(1j*K[1]*U_hat[2],dUdX[7])
 dUdX[8] = ifftn_mpi(1j*K[2]*U_hat[2],dUdX[8])
+
+Sk = np.zeros(3)  
+Fl = np.zeros(3)
+
+
+Sk[0] = np.mean(dUdX[0]**3)/np.mean(dUdX[0]**2)**1.5
+Sk[1] = np.mean(dUdX[4]**3)/np.mean(dUdX[4]**2)**1.5
+Sk[2] = np.mean(dUdX[8]**3)/np.mean(dUdX[8]**2)**1.5
+
+Fl[0] = np.mean(dUdX[0]**4)/np.mean(dUdX[0]**2)**2
+Fl[1] = np.mean(dUdX[4]**4)/np.mean(dUdX[4]**2)**2
+Fl[2] = np.mean(dUdX[8]**4)/np.mean(dUdX[8]**2)**2
