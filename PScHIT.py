@@ -285,4 +285,18 @@ def comp_VGT_HO_Stat(m2, m3, m4):
     f1.close()
     return
 
+
+def comp_ScalarVar_Budget(VarPhi, VarPhi_old, Forcing_Flux, epsilon_phi):
+
+    # Computing the rate of scalar variance
+    dVarPhi_dt = 0.5*(VarPhi - VarPhi_old)/dt
+
+    f1 = open('ScalarVariance_Balance.txt', 'a')
+    print(format(t, 'g'),
+          format(VarPhi, 'g'), format(dVarPhi_dt, 'g'),
+          format(-Forcing_Flux, 'g'), format(-epsilon_phi, 'g'),
+          sep=" ", end='\n', file = f1, flush=False)
+    f1.close()
+    return
+
 # %%##########################################################################
