@@ -161,3 +161,34 @@ def ifftn_mpi(fu, u):
     return u
 
 # %%##########################################################################
+
+def Stochastic_forcing():
+
+    sigma = .5  # Standard deviation.
+    mu = 10.  # Mean.
+    tau = .05  # Time constant.
+
+    T = 1000.  # Total time.
+    n = int(T/dt)  # Number of time steps.
+
+    sigma_bis = sigma * np.sqrt(2./tau)
+    sqrtdt = np.sqrt(dt)
+
+    xp = np.zeros((6,n))
+
+    for i in range(n - 1):
+
+        for j in range(6):
+
+            xp[j,i + 1] = xp[j,i] + dt * (-(xp[j,i] - mu) / tau) + \
+                    sigma_bis * sqrtdt * np.random.randn()
+
+
+    os.chdir(rst)
+    xp = np.mean(xp[:,1000::],axis=0)/mu
+    io.savemat('OU_process.mat', {'OU': xp})
+    os.chdir('../')
+
+    return xp
+
+# %%##########################################################################
