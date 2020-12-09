@@ -618,3 +618,11 @@ while t < end_time-1e-8:
             # Computing scalar flux vector
             for i in range(3):
                 ScalarFlux[i] = comm.reduce(np.mean(Phi*U[i])/nproc)
+
+        if rank == 0:
+
+            # Computing sing-point statistics
+            comp_singlepoint(TKE, epsilon, max_V)
+
+            # Computing Skweness and Flatness of VGT
+            comp_VGT_HO_Stat(mu2, mu3, mu4)
