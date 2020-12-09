@@ -228,3 +228,11 @@ print(format(Sk[0], 'g'), format(Sk[1], 'g'), format(Sk[2], 'g'),
 f2.close()
 
 # %%##########################################################################
+
+Np = N//nproc
+
+for i in range(nproc):
+    io.savemat('Vel'+str(N)+'-p_'+str(i)+'.mat', {
+            'u1': np.reshape(U[0,i*Np:(i+1)*Np,:,:], NN),
+            'u2': np.reshape(U[1,i*Np:(i+1)*Np,:,:], NN),
+            'u3': np.reshape(U[2,i*Np:(i+1)*Np,:,:], NN)})
