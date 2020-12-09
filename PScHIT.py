@@ -265,4 +265,24 @@ def comp_singlepoint(TKE, epsilon, max_V):
 
     return
 
+
+def comp_VGT_HO_Stat(m2, m3, m4):
+
+    Sk = np.zeros(3)
+    Fl = np.zeros(3)
+
+    # Computing Skweness and Flatness of VGT
+    for i in range(3):
+        Sk[i] = m3[i]/m2[i]**1.5
+        Fl[i] = m4[i]/m2[i]**2
+
+    # Writing statistical quantities out
+    f1 = open('VGT_Moments.txt', 'a')
+    print(format(t, 'g'),
+          format(Sk[0], 'g'), format(Sk[1], 'g'), format(Sk[2], 'g'),
+          format(Fl[0], 'g'), format(Fl[1], 'g'), format(Fl[2], 'g'),
+          sep=" ", end='\n', file = f1, flush=False)
+    f1.close()
+    return
+
 # %%##########################################################################
