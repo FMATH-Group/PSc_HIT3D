@@ -386,3 +386,26 @@ def ComputeRHS_AD(dPhi, rk):
     return dPhi
 
 #%%###########################################################################
+
+if nout == 0:
+
+    # Start from constructed random velocity
+    # field based on pre-defined spectrum
+    if solver_type == 'HIT':
+        if rank == 0:
+            os.mkdir(dirname)
+
+        # Read velocity field
+        uu = io.loadmat('IC'+IC_in+'/Vel'+str(N)+'-p_'+str(rank)+'.mat')
+
+        for i in range(3):
+            U[i] = np.reshape(uu['u'+str(i+1)][0,:].T,(Np,N,N))
+            U_hat[i] = np.sqrt(mag)*fftn_mpi(U[i], U_hat[i])
+            U[i] = ifftn_mpi(U_hat[i], U[i])
+
+        target_energy = comm.reduce(np.mean(np.sum(U**2,0))/nproc)
+
+        t = 0.0
+        tstep = 0
+
+#%%###########################################################################
