@@ -143,3 +143,13 @@ def get_ScalarGrad(a, c):
     for i in range(3):
         c[i] = ifftn_mpi(1j*(K[i]*a), c[i])
     return c
+
+def get_Hessian(a_hat, c):
+
+    c[0] = ifftn_mpi(-K[0]*K[0]*a_hat,c[0])
+    c[1] = ifftn_mpi(-K[0]*K[1]*a_hat,c[1])
+    c[2] = ifftn_mpi(-K[0]*K[2]*a_hat,c[2])
+    c[3] = ifftn_mpi(-K[1]*K[1]*a_hat,c[4])
+    c[4] = ifftn_mpi(-K[1]*K[2]*a_hat,c[5])
+    c[5] = ifftn_mpi(-K[2]*K[2]*a_hat,c[8])
+    return c
