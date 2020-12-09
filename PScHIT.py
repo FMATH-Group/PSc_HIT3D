@@ -363,4 +363,16 @@ def PhiGrad(a, c):
         c[i] = ifftn_mpi(1j*(K[i]*a), c[i])
     return c
 
+def ComputeRHS_NS(dU, rk):
+    if rk > 0:
+        for i in range(3):
+            U[i] = ifftn_mpi(U_hat[i], U[i])
+    curl[:] = Curl(U_hat, curl)
+    dU = Cross(U, curl, dU)
+    dU *= dealias
+    P_hat[:] = np.sum(dU*K_over_K2, 0, out=P_hat)
+    dU -= P_hat*K
+    dU -= nu*K2*U_hat
+    return dU
+
 #%%###########################################################################
