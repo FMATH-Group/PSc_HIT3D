@@ -543,3 +543,27 @@ while t < end_time-1e-8:
 
     if rank == 0:
         U_hat[:, 0, 0, 0] = 0.0
+
+    # Artificial forcing scheme on low wavenumbers
+    if if_forced:
+        for i in range(3):
+            U[i] = ifftn_mpi(U_hat[i], U[i])
+            U_low[i] = ifftn_mpi(U_hat[i]*k2_mask, U_low[i])
+
+        energy_new = comm.reduce(np.mean(np.sum(U**2,0))/nproc)
+        energy_lower = comm.reduce(np.mean(np.sum(U_low**2,0))/nproc)
+
+        sendbuf = []
+        if rank == 0:
+            energy_upper = energy_new - energy_lower
+            alpha2 = (target_energy - energy_upper) /energy_lower
+
+            if forcing_type == 'stochastic':
+                alpha2 *= xp[tstep-1]
+
+            sendbuf = np.sqrt(alpha2)
+
+        alpha = comm.bcast(sendbuf,root)
+
+        U_hat[:] *= (alpha*k2_mask + (1-k2_mask))
+
