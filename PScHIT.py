@@ -567,3 +567,24 @@ while t < end_time-1e-8:
 
         U_hat[:] *= (alpha*k2_mask + (1-k2_mask))
 
+
+############################ Outputs and Statistics ##########################
+
+    if np.mod(tstep,Stats_freq) == 0:
+
+        # Turbulent kinetic energy
+        TKE = comm.reduce(0.5*np.mean(np.sum(U**2,0))/nproc)
+        max_V = comm.gather(np.max(np.abs(U[0])+np.abs(U[1])+np.abs(U[2])),root)
+
+        # Computing VGT
+        dUdX[:] = comp_VGT(U_hat, dUdX)
+
+        # High-oreder moments of velocity gradient tensor (VGT)
+        mu2, mu3, mu4 = comp_VGT_moments(dUdX, mu2, mu3, mu4)
+
+        # Strain-rate tensor
+        S_ij = dUdX[0]**2 + dUdX[4]**2 + dUdX[8]**2 + 0.5 * (
+            (dUdX[1]+dUdX[3])**2 + (dUdX[2]+dUdX[6])**2 + (dUdX[5]+dUdX[7])**2)
+
+        # Turbulent dissipation
+        epsilon = comm.reduce(2 * nu * np.mean(S_ij)/nproc)
