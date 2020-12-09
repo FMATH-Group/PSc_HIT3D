@@ -639,7 +639,7 @@ while t < end_time-1e-8:
 
 ##############################################################################
 
-        # writing the velocity, prssure, and scalar fields out
+        # writing the velocity, pressure, and scalar fields out
         if np.mod(tstep,Out_freq) == 0:
 
             nout += 1
@@ -668,3 +668,27 @@ while t < end_time-1e-8:
                     'phi': np.reshape(Phi, Np*N**2)})
 
             os.chdir('../')
+
+##############################################################################
+
+        # writing out the restart files
+        os.chdir(rst)
+
+        io.savemat('Vel'+str(N)+'-p_'+str(rank)+'.mat', {
+            'u1': np.reshape(U[0], Np*N**2),
+            'u2': np.reshape(U[1], Np*N**2),
+            'u3': np.reshape(U[2], Np*N**2)})
+
+        if solver_type == 'Scalar':
+            io.savemat('Phi'+str(N)+'-p_'+str(rank)+'.mat', {
+                'phi': np.reshape(Phi, Np*N**2)})
+
+        if rank == 0:
+            ft = open('time.txt', 'w')
+            print(format(t, 'g'), format(tstep, 'g'), format(nout, 'g'),
+                  sep=" ", end='\n', file = ft, flush=False)
+            ft.close()
+
+        os.chdir('../')
+
+##############################################################################
