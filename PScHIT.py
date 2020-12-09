@@ -102,3 +102,17 @@ if solver_type == 'Scalar':
     dPhi0 = np.empty((3, N, Np, N2), dtype=complex)
     
 # %%##########################################################################
+
+kx = fftfreq(N, 1./N)
+kz = kx[:N2].copy()
+kz[-1] *= -1
+K = np.array(np.meshgrid(kx, kx[rank*Np:(rank+1)*Np], kz, indexing='ij'),
+             dtype=int)
+K2 = np.sum(K*K, 0, dtype=int)
+K_over_K2 = K.astype(float) / np.where(K2 == 0, 1, K2).astype(float)
+
+kmax_dealias = 2 * K_cut * N2
+dealias = np.array((np.abs(K[0]) < kmax_dealias)*(np.abs(K[1]) < kmax_dealias)*
+                   (np.abs(K[2]) < kmax_dealias), dtype=bool)
+
+# %%##########################################################################
