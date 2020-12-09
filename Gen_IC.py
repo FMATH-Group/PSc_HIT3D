@@ -205,3 +205,26 @@ Sk[2] = np.mean(dUdX[8]**3)/np.mean(dUdX[8]**2)**1.5
 Fl[0] = np.mean(dUdX[0]**4)/np.mean(dUdX[0]**2)**2
 Fl[1] = np.mean(dUdX[4]**4)/np.mean(dUdX[4]**2)**2
 Fl[2] = np.mean(dUdX[8]**4)/np.mean(dUdX[8]**2)**2
+
+
+f1 = open('Turb_Stats.txt', 'a')
+print(format(TKE, 'g'), 
+      format(np.mean(U[0]), 'g'),
+      format(np.mean(U[1]), 'g'),
+      format(np.mean(U[2]), 'g'),
+      format(np.mean(U[0]**3)/np.mean(U[0]**2)**1.5, 'g'),
+      format(np.mean(U[1]**3)/np.mean(U[1]**2)**1.5, 'g'),
+      format(np.mean(U[2]**3)/np.mean(U[2]**2)**1.5, 'g'),
+      format(np.mean(U[0]**4)/np.mean(U[0]**2)**2, 'g'),
+      format(np.mean(U[1]**4)/np.mean(U[1]**2)**2, 'g'),
+      format(np.mean(U[2]**4)/np.mean(U[2]**2)**2, 'g'),
+      sep=" ", end='\n', file = f1, flush=False)
+f1.close()
+
+f2 = open('VGT_Moments.txt', 'a')
+print(format(Sk[0], 'g'), format(Sk[1], 'g'), format(Sk[2], 'g'),
+      format(Fl[0], 'g'), format(Fl[1], 'g'), format(Fl[2], 'g'), 
+      sep=" ", end='\n', file = f2, flush=False)
+f2.close()
+
+# %%##########################################################################
