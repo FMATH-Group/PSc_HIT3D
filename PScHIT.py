@@ -588,3 +588,33 @@ while t < end_time-1e-8:
 
         # Turbulent dissipation
         epsilon = comm.reduce(2 * nu * np.mean(S_ij)/nproc)
+
+        if solver_type == 'Scalar':
+
+            # Computing passive scalar gradient
+            dPhidX[:] = PhiGrad(Phi_hat, dPhidX)
+
+            # Scalar dissipation
+            ddPhi = dPhidX[0]**2 + dPhidX[1]**2 + dPhidX[2]**2
+            epsilon_phi = comm.reduce(gamma * np.mean(ddPhi)/nproc)
+
+            # High-order moments of scalar fluctuations gradient
+            for i in range(3):
+                mu2_dphi[i] = comm.reduce(np.mean(dPhidX[i]**2)/nproc)
+                mu3_dphi[i] = comm.reduce(np.mean(dPhidX[i]**3)/nproc)
+                mu4_dphi[i] = comm.reduce(np.mean(dPhidX[i]**4)/nproc)
+
+            # Forcing Scalar flux due to non-zero mean scalar gradient
+            Forcing_Flux = comm.reduce(beta * np.mean(Phi*U[frc_dir])/nproc)
+
+            # Scalar variance
+            VarPhi = comm.reduce(np.mean(Phi**2) / nproc)
+            VarPhi_old = comm.reduce(np.mean(Phi_old**2)/nproc)
+
+            # High-order central moments of scalar fluctuations
+            mu3_phi = comm.reduce(np.mean(Phi**3)/nproc)
+            mu4_phi = comm.reduce(np.mean(Phi**4)/nproc)
+
+            # Computing scalar flux vector
+            for i in range(3):
+                ScalarFlux[i] = comm.reduce(np.mean(Phi*U[i])/nproc)
