@@ -636,3 +636,35 @@ while t < end_time-1e-8:
                 # Skweness and Flatness of scalar fluctuations and gradients
                 comp_Scalar_Stats(VarPhi, mu3_phi, mu4_phi, mu2_dphi, mu3_dphi,
                                   mu4_dphi, ScalarFlux)
+
+##############################################################################
+
+        # writing the velocity, prssure, and scalar fields out
+        if np.mod(tstep,Out_freq) == 0:
+
+            nout += 1
+
+            if rank == 0:
+                os.mkdir('Out_'+str(nout))
+
+            comm.Barrier()
+
+            os.chdir('Out_'+str(nout))
+
+            io.savemat('Vel'+str(N)+'-p_'+str(rank)+'.mat', {
+                'u1': np.reshape(U[0], Np*N**2),
+                'u2': np.reshape(U[1], Np*N**2),
+                'u3': np.reshape(U[2], Np*N**2)})
+
+            if if_writeP == 'True':
+                P = get_Pressure(U_hat, U, P)
+
+                io.savemat('P'+str(N)+'-p_'+str(rank)+'.mat', {
+                    'P': np.reshape(P, Np*N**2)})
+
+
+            if solver_type == 'Scalar':
+                io.savemat('Phi'+str(N)+'-p_'+str(rank)+'.mat', {
+                    'phi': np.reshape(Phi, Np*N**2)})
+
+            os.chdir('../')
