@@ -159,3 +159,16 @@ def Curl(a, c):
     c[1] = ifftn_mpi(1j*(K[2]*a[0]-K[0]*a[2]), c[1])
     c[2] = ifftn_mpi(1j*(K[0]*a[1]-K[1]*a[0]), c[2])
     return c
+
+def get_Pressure(a, da, b):
+
+    dU[0] = fftn_mpi(a[0]*da[0]+a[1]*da[1]+a[2]*da[2], dU[0])
+    dU[1] = fftn_mpi(a[0]*da[3]+a[1]*da[4]+a[2]*da[5], dU[1])
+    dU[2] = fftn_mpi(a[0]*da[6]+a[1]*da[7]+a[2]*da[8], dU[2])
+
+    dU[:] *= dealias
+    P_hat[:] = np.sum(dU*K_over_K2, 0, out=P_hat)
+    b = ifftn_mpi(1j*P_hat, b)
+    return b
+
+# %%##########################################################################
