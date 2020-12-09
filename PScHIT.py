@@ -514,3 +514,19 @@ else:
     nout = int(temp[2])
     
 #%%###########################################################################
+########################### Time-stepping for solver #########################
+
+while t < end_time-1e-8:
+    t += dt
+    tstep += 1
+
+    if solver_type == 'Scalar':
+        # Scalar Solver
+        U_hat1[0] = U_hat0[0] = Phi_hat
+        for rk in range(4):
+            dPhi[:] = ComputeRHS_AD(dPhi, rk)
+            if rk < 3:
+                Phi_hat[:] = U_hat0[0] + b[rk]*dt*dPhi
+            U_hat1[0] += a[rk]*dt*dPhi
+        Phi_hat[:] = U_hat1[0]
+        Phi[:] = ifftn_mpi(Phi_hat, Phi)
