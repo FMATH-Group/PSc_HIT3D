@@ -68,3 +68,14 @@ K_over_K2 = K.astype(float) / np.where(K2 == 0, 1, K2).astype(float)
 
 
 # %%##########################################################################
+
+def fftn_mpi(u, fu):
+
+    Uc_hatT[:] = rfft2(u, axes=(1, 2))
+    fu[:] = np.rollaxis(Uc_hatT.reshape(Np, n_proc, Np, N2),
+                        1).reshape(fu.shape)
+    comm.Alltoall(MPI.IN_PLACE, [fu, MPI.DOUBLE_COMPLEX])
+    fu[:] = fft(fu, axis=0)
+    return fu
+
+#%%###########################################################################
