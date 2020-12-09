@@ -299,4 +299,35 @@ def comp_ScalarVar_Budget(VarPhi, VarPhi_old, Forcing_Flux, epsilon_phi):
     f1.close()
     return
 
+
+def comp_Scalar_Stats(VarPhi, mu3_phi, mu4_phi, mu2, mu3, mu4, Flux):
+
+    S_dphi = np.zeros(3)
+    F_dphi = np.zeros(3)
+
+    if nout > 0:
+        # Computing Skweness and Flatness of scalar gradients
+        for i in range(3):
+            S_dphi[i] = mu3[i]/mu2[i]**1.5
+            F_dphi[i] = mu4[i]/mu2[i]**2
+
+        # Computing Skweness and Flatness of scalar fluctuations
+        S_phi = mu3_phi/VarPhi**1.5
+        F_phi = mu4_phi/VarPhi**2
+
+    f1 = open('Moments_Scalar.txt', 'a')
+    print(format(t, 'g'),
+          format(mu2[0], 'g'), format(mu2[1], 'g'), format(mu2[2], 'g'),
+          format(S_dphi[0], 'g'),
+          format(S_dphi[1], 'g'),
+          format(S_dphi[2], 'g'),
+          format(F_dphi[0], 'g'),
+          format(F_dphi[1], 'g'),
+          format(F_dphi[2], 'g'),
+          format(VarPhi, 'g'), format(S_phi, 'g'), format(F_phi, 'g'),
+          format(Flux[0], 'g'), format(Flux[1], 'g'), format(Flux[2], 'g'),
+          sep=" ", end='\n', file = f1, flush=False)
+    f1.close()
+    return
+
 # %%##########################################################################
