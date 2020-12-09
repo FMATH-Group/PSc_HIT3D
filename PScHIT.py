@@ -530,3 +530,16 @@ while t < end_time-1e-8:
             U_hat1[0] += a[rk]*dt*dPhi
         Phi_hat[:] = U_hat1[0]
         Phi[:] = ifftn_mpi(Phi_hat, Phi)
+
+
+    # Momentum Solver
+    U_hat1[:] = U_hat0[:] = U_hat
+    for rk in range(4):
+        dU = ComputeRHS_NS(dU, rk)
+        if rk < 3:
+            U_hat[:] = U_hat0 + b[rk]*dt*dU
+        U_hat1[:] += a[rk]*dt*dU
+    U_hat[:] = U_hat1[:]
+
+    if rank == 0:
+        U_hat[:, 0, 0, 0] = 0.0
