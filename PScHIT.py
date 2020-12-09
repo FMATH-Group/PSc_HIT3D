@@ -221,4 +221,32 @@ def comp_VGT_moments(a, m2, m3, m4):
     m4[2] = comm.reduce(np.mean(a[8]**4)/nproc)
     return m2, m3, m4
 
+def comp_singlepoint(TKE, epsilon, max_V):
+
+    # Kolmogorov length-scale
+    eta = (nu**3 / epsilon)**0.25
+
+    # r.m.s. velocity
+    u_rms = (2*TKE/3.)**.5
+
+    # Integral length-scale
+    l0 = u_rms**3/epsilon
+
+    # Taylor micro-scale
+    lamb = u_rms*(15*nu/epsilon)**0.5
+
+    # Large-scale Reynolds number
+    Re_l0 = u_rms*l0/nu
+
+    # Taylor micro-scale Reynolds number
+    Re_lamb = u_rms*lamb/nu
+
+    # Large-eddy turnover time
+    turnover_t = l0/u_rms
+
+    # compute CFL
+    CFL = dt_dx * np.max(max_V)
+
+    return
+
 # %%##########################################################################
