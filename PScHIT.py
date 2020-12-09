@@ -433,5 +433,46 @@ if nout == 0:
         t = float(temp[0])
         tstep = int(temp[1])
         nout = int(temp[2])
+        
+    # Computing Stats for I.C.
+
+    TKE = comm.reduce(0.5*np.mean(np.sum(U**2,0))/nproc)
+    max_V = comm.gather(np.max(np.abs(U[0])+np.abs(U[1])+np.abs(U[2])), root)
+
+    dUdX[:] = comp_VGT(U_hat, dUdX)
+
+    S_ij = dUdX[0]**2 + dUdX[4]**2 + dUdX[8]**2 + 0.5 * (
+        (dUdX[1]+dUdX[3])**2 + (dUdX[2]+dUdX[6])**2 + (dUdX[5]+dUdX[7])**2)
+
+    epsilon = comm.reduce(2 * nu * np.mean(S_ij) / nproc)
+
+    mu2, mu3, mu4 = comp_VGT_moments(dUdX, mu2, mu3, mu4)
+
+    os.chdir(dirpath)
+    if rank == 0:
+
+        os.mkdir(rst)
+        os.chdir(rst)
+
+        ftg = open('Target-'+IC_in+'-'+sim_in+'.txt', 'w')
+        print(format(target_energy, '.15f'),
+              sep=" ", end='\n', file = ftg, flush=False)
+        ftg.close()
+
+        os.chdir('../')
+
+
+        comp_singlepoint(TKE, epsilon, max_V)
+
+        comp_VGT_HO_Stat(mu2, mu3, mu4)
+
+
+        if solver_type == 'Scalar':
+            tmp = 0
+            comp_ScalarVar_Budget(tmp, tmp, tmp, tmp)
+
+            tmp = np.zeros(3)
+            comp_Scalar_Stats(tmp, tmp[0], tmp[0], mu2_dphi, mu3_dphi,
+                              mu4_dphi, ScalarFlux)
 
 #%%###########################################################################
