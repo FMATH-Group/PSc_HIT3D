@@ -352,4 +352,10 @@ def get_Pressure(a_hat, a, b):
     b = ifftn_mpi(P_hat, b)
     return b
 
+def U_Phi(a, b, c):
+    for i in range(3):
+        dPhi0[i] = fftn_mpi(a[i]*b[i], dPhi0[i])
+    c[:] = np.sum(dPhi0, 0, out=c)
+    return c
+
 #%%###########################################################################
