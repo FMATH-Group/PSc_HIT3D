@@ -137,3 +137,9 @@ def get_VectorGrad(a, c):
     c[7] = ifftn_mpi(1j*K[1]*a[2],c[7])
     c[8] = ifftn_mpi(1j*K[2]*a[2],c[8])
     return c
+
+def get_ScalarGrad(a, c):
+
+    for i in range(3):
+        c[i] = ifftn_mpi(1j*(K[i]*a), c[i])
+    return c
