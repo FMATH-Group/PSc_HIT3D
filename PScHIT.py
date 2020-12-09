@@ -375,4 +375,14 @@ def ComputeRHS_NS(dU, rk):
     dU -= nu*K2*U_hat
     return dU
 
+def ComputeRHS_AD(dPhi, rk):
+    if rk > 0:
+        Phi[:] = ifftn_mpi(Phi_hat, Phi)
+    dPhidX[:] = PhiGrad(Phi_hat, dPhidX)
+    dPhi = -U_Phi(U, dPhidX, dPhi)
+    dPhi *= dealias
+    dPhi -= gamma*K2*Phi_hat
+    dPhi -= beta*U_hat[frc_dir]
+    return dPhi
+
 #%%###########################################################################
