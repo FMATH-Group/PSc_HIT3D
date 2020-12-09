@@ -78,4 +78,13 @@ def fftn_mpi(u, fu):
     fu[:] = fft(fu, axis=0)
     return fu
 
+def ifftn_mpi(fu, u):
+
+    Uc_hat[:] = ifft(fu, axis=0)
+    comm.Alltoall(MPI.IN_PLACE, [Uc_hat, MPI.DOUBLE_COMPLEX])
+    Uc_hatT[:] = np.rollaxis(Uc_hat.reshape((n_proc, Np, Np, N2)),
+                             1).reshape(Uc_hatT.shape)
+    u[:] = irfft2(Uc_hatT, axes=(1, 2))
+    return u
+
 #%%###########################################################################
