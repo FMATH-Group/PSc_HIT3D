@@ -121,3 +121,19 @@ def Read_field():
     return
 
 # %%##########################################################################
+
+
+def get_VectorGrad(a, c):
+
+    c[0] = ifftn_mpi(1j*K[0]*a[0],c[0])
+    c[1] = ifftn_mpi(1j*K[1]*a[0],c[1])
+    c[2] = ifftn_mpi(1j*K[2]*a[0],c[2])
+
+    c[3] = ifftn_mpi(1j*K[0]*a[1],c[3])
+    c[4] = ifftn_mpi(1j*K[1]*a[1],c[4])
+    c[5] = ifftn_mpi(1j*K[2]*a[1],c[5])
+
+    c[6] = ifftn_mpi(1j*K[0]*a[2],c[6])
+    c[7] = ifftn_mpi(1j*K[1]*a[2],c[7])
+    c[8] = ifftn_mpi(1j*K[2]*a[2],c[8])
+    return c
