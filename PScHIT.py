@@ -692,3 +692,16 @@ while t < end_time-1e-8:
         os.chdir('../')
 
 ##############################################################################
+
+    if solver_type == 'Scalar':
+        # Ensuring zero-mean passive scalar field
+        Phi_old[:] = Phi
+        Phi_mean = comm.reduce(np.mean(Phi)/nproc)
+
+        sendbuf = []
+        if rank == 0:
+            sendbuf = Phi_mean
+
+        Phi_mean_p = comm.bcast(sendbuf,root)
+        Phi[:] -= Phi_mean_p
+        Phi_hat[:] = fftn_mpi(Phi, Phi_hat)
