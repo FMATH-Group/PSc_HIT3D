@@ -246,6 +246,22 @@ def comp_singlepoint(TKE, epsilon, max_V):
 
     # compute CFL
     CFL = dt_dx * np.max(max_V)
+    
+    
+    # Writing statistical quantities out
+    f1 = open('Stats_Vel.txt', 'a')
+    print(format(t, 'g'),
+          format(TKE, 'g'), format(epsilon, 'g'), format(Kmax*eta, 'g'),
+          format(l0, 'g'), format(Re_l0, 'g'), format(Re_lamb, 'g'),
+          format(turnover_t, 'g'),
+          sep=" ", end='\n', file = f1, flush=False)
+    f1.close()
+
+    # Writing out CFL record
+    f2 = open('CFL.txt', 'a')
+    print(format(t, 'g'), format(CFL, 'g'),
+          sep=" ", end='\n', file = f2, flush=False)
+    f2.close()
 
     return
 
