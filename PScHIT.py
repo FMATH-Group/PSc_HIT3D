@@ -475,4 +475,42 @@ if nout == 0:
             comp_Scalar_Stats(tmp, tmp[0], tmp[0], mu2_dphi, mu3_dphi,
                               mu4_dphi, ScalarFlux)
 
+##############################################################################
+# Restart from ``Restart'' output files for velocity & passive scalar fields
+else:
+
+    os.chdir(rst)
+
+    # Read the target TKE for artifical forcing
+    if rank == 0:
+        target_energy = float(np.genfromtxt(
+            'Target-'+IC_in+'-'+sim_in+'.txt'))
+
+        if forcing_type == 'stochastic':
+            stc = io.loadmat('IC'+IC_in+'/OU_process.mat')
+            xp = stc['OU'].reshape((-1,1))
+
+    # Read the velocity field
+    uu = io.loadmat('Vel'+str(N)+'-p_'+str(rank)+'.mat')
+
+    for i in range(3):
+        U[i] = np.reshape(uu['u'+str(i+1)][0,:].T,(Np,N,N))
+        U_hat[i] = fftn_mpi(U[i], U_hat[i])
+
+    # Read the passive scalar field
+    if solver_type == 'Scalar':
+        pp = io.loadmat('Phi'+str(N)+'-p_'+str(rank)+'.mat')
+
+        Phi = np.reshape(pp['phi'][0,:].T,(Np,N,N))
+        Phi_hat[:] = fftn_mpi(Phi, Phi_hat)
+
+
+    temp = np.loadtxt('time.txt')
+
+    os.chdir('../')
+
+    t = float(temp[0])
+    tstep = int(temp[1])
+    nout = int(temp[2])
+    
 #%%###########################################################################
