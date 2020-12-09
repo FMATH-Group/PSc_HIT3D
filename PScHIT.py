@@ -141,3 +141,14 @@ if solver_type == 'Scalar':
     mu4_dphi = np.zeros(3)
 
 # %%##########################################################################
+
+def fftn_mpi(u, fu):
+
+    Uc_hatT[:] = rfft2(u, axes=(1, 2))
+    fu[:] = np.rollaxis(Uc_hatT.reshape(Np, nproc, Np, N2),
+                        1).reshape(fu.shape)
+    comm.Alltoall(MPI.IN_PLACE, [fu, MPI.DOUBLE_COMPLEX])
+    fu[:] = fft(fu, axis=0)
+    return fu
+
+# %%##########################################################################
