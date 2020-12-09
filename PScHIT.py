@@ -70,3 +70,24 @@ rst = os.path.join(dirpath,'Restart')
 
 
 # %%##########################################################################
+
+comm = MPI.COMM_WORLD
+nproc = comm.Get_size()
+rank = comm.Get_rank()
+root = 0
+
+Np = N//nproc
+N2 = N//2+1
+
+U = np.empty((3, Np, N, N))
+U_low = np.empty((3, Np, N, N))
+dUdX = np.empty((9, Np, N, N))
+U_hat = np.empty((3, N, Np, N2), dtype=complex)
+U_hat0 = np.empty((3, N, Np, N2), dtype=complex)
+U_hat1 = np.empty((3, N, Np, N2), dtype=complex)
+dU = np.empty((3, N, Np, N2), dtype=complex)
+Uc_hat = np.empty((N, Np, N2), dtype=complex)
+Uc_hatT = np.empty((Np, N, N2), dtype=complex)
+P = np.empty((Np, N, N))
+P_hat = np.empty((N, Np, N2), dtype=complex)
+curl = np.empty((3, Np, N, N))
