@@ -172,3 +172,74 @@ def get_Pressure(a, da, b):
     return b
 
 # %%##########################################################################
+
+os.chdir(rst)
+Read_field()
+
+
+if rank == 0:
+    os.mkdir('Vorticity')
+    os.mkdir('VGT')
+    os.mkdir('Pressure')
+
+    if solver_type == 'Scalar':
+        os.mkdir('ScalarGradient')
+comm.Barrier()
+
+
+
+# Computing vorticity
+Omega[:] = Curl(U_hat, Omega)
+
+os.chdir('Vorticity')
+io.savemat('Vor'+str(N)+'-p_'+str(rank)+'.mat', {
+    'w1': np.reshape(Omega[0], NN), 'w2': np.reshape(Omega[1], NN),
+    'w3': np.reshape(Omega[2], NN)})
+os.chdir('../')
+
+
+# Computing VGT
+dUdX[:] = get_VectorGrad(U_hat, dUdX)
+
+os.chdir('VGT')
+io.savemat('VGT'+str(N)+'-p_'+str(rank)+'.mat', {
+    'dudx': np.reshape(dUdX[0], NN), 'dudy': np.reshape(dUdX[1], NN),
+    'dudz': np.reshape(dUdX[2], NN), 'dvdx': np.reshape(dUdX[3], NN),
+    'dvdy': np.reshape(dUdX[4], NN), 'dvdz': np.reshape(dUdX[5], NN),
+    'dwdx': np.reshape(dUdX[6], NN), 'dwdy': np.reshape(dUdX[7], NN),
+    'dwdz': np.reshape(dUdX[8], NN)})
+os.chdir('../')
+
+
+# Computing pressure
+P = get_Pressure(U, dUdX, P)
+
+os.chdir('Pressure')
+io.savemat('P'+str(N)+'-p_'+str(rank)+'.mat', {
+    'P': np.reshape(P, NN**2)})
+
+
+# Computing pressure Hessian
+P_hat = fftn_mpi(P, P_hat)
+H_ij[:] = get_Hessian(P_hat, H_ij)
+
+io.savemat('Hess'+str(N)+'-p_'+str(rank)+'.mat', {
+    'dPdxx': np.reshape(H_ij[0], NN), 'dPdxy': np.reshape(H_ij[1], NN),
+    'dPdxz': np.reshape(H_ij[2], NN), 'dPdyy': np.reshape(H_ij[3], NN),
+    'dPdyz': np.reshape(H_ij[4], NN), 'dPdzz': np.reshape(H_ij[5], NN)})
+os.chdir('../')
+
+
+# Computing scalar gradient
+if solver_type == 'Scalar':
+
+    dPhidX[:] = get_ScalarGrad(Phi_hat, dPhidX)
+
+    os.chdir('ScalarGradient')
+    io.savemat('PhiGrad'+str(N)+'-p_'+str(rank)+'.mat', {
+        'dphidx': np.reshape(dPhidX[0], NN),
+        'dphidy': np.reshape(dPhidX[1], NN),
+        'dphidz': np.reshape(dPhidX[2], NN)})
+    os.chdir('../')
+
+#%%###########################################################################
