@@ -38,3 +38,19 @@ os.mkdir(dirpath)
 os.chdir(dirpath)
 
 # %%##########################################################################
+
+comm = MPI.COMM_WORLD
+n_proc = comm.Get_size()
+rank = comm.Get_rank()
+
+Np = N//n_proc
+N2 = N//2+1
+NN = Np*N**2
+
+
+U = np.empty((3, Np, N, N))
+dUdX = np.empty((9, Np, N, N))
+U_hat = np.empty((3, N, Np, N2), dtype=complex)
+dU = np.empty((3, N, Np, N2), dtype=complex)
+Uc_hat = np.empty((N, Np, N2), dtype=complex)
+Uc_hatT = np.empty((Np, N, N2), dtype=complex)
