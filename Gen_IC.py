@@ -54,3 +54,17 @@ U_hat = np.empty((3, N, Np, N2), dtype=complex)
 dU = np.empty((3, N, Np, N2), dtype=complex)
 Uc_hat = np.empty((N, Np, N2), dtype=complex)
 Uc_hatT = np.empty((Np, N, N2), dtype=complex)
+
+
+# %%##########################################################################
+
+kx = fftfreq(N, 1./N)
+kz = kx[:N2].copy()
+kz[-1] *= -1
+K = np.array(np.meshgrid(kx, kx[rank*Np:(rank+1)*Np], kz, indexing='ij'),
+             dtype=int)
+K2 = np.sum(K*K, 0, dtype=int)
+K_over_K2 = K.astype(float) / np.where(K2 == 0, 1, K2).astype(float)
+
+
+# %%##########################################################################
