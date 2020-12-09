@@ -358,4 +358,9 @@ def U_Phi(a, b, c):
     c[:] = np.sum(dPhi0, 0, out=c)
     return c
 
+def PhiGrad(a, c):
+    for i in range(3):
+        c[i] = ifftn_mpi(1j*(K[i]*a), c[i])
+    return c
+
 #%%###########################################################################
