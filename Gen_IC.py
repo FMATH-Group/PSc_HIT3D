@@ -179,3 +179,17 @@ for i in range(3):
 
 
 # %%##########################################################################
+        
+TKE = 0.5*np.mean(U[0]**2+U[1]**2+U[2]**2)
+
+dUdX[0] = ifftn_mpi(1j*K[0]*U_hat[0],dUdX[0])
+dUdX[1] = ifftn_mpi(1j*K[1]*U_hat[0],dUdX[1])
+dUdX[2] = ifftn_mpi(1j*K[2]*U_hat[0],dUdX[2])
+
+dUdX[3] = ifftn_mpi(1j*K[0]*U_hat[1],dUdX[3])
+dUdX[4] = ifftn_mpi(1j*K[1]*U_hat[1],dUdX[4])
+dUdX[5] = ifftn_mpi(1j*K[2]*U_hat[1],dUdX[5])
+
+dUdX[6] = ifftn_mpi(1j*K[0]*U_hat[2],dUdX[6])
+dUdX[7] = ifftn_mpi(1j*K[1]*U_hat[2],dUdX[7])
+dUdX[8] = ifftn_mpi(1j*K[2]*U_hat[2],dUdX[8])
